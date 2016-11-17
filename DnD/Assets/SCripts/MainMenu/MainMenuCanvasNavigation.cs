@@ -10,6 +10,8 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
     float transferTime = 0.5f;
     Vector3 p = Vector3.zero;
     [SerializeField]
+    Transform BackgroundMapThing = null;
+    [SerializeField]
     Transform MainMenu = null;
     Vector3 mmStartValue;
     [SerializeField]
@@ -18,6 +20,12 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
     Transform hostGameMenu = null;
     [SerializeField]
     Transform joinGameMenu = null;
+    [SerializeField]
+    Transform createMainMenu = null;
+    [SerializeField]
+    Transform createMapMenu = null;
+    [SerializeField]
+    Transform createCampaignMenu = null;
 
     // Use this for initialization
     void Start() {
@@ -26,6 +34,9 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
         playOnlineMenu.gameObject.SetActive(true);
         hostGameMenu.gameObject.SetActive(true);
         joinGameMenu.gameObject.SetActive(true);
+        createMainMenu.gameObject.SetActive(true);
+        createMapMenu.gameObject.SetActive(true);
+        createCampaignMenu.gameObject.SetActive(true);
 
         mmStartValue = MainMenu.GetComponent<RectTransform>().position;
         p = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height / 2, Camera.main.nearClipPlane));
@@ -34,6 +45,9 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
         playOnlineMenu.position += new Vector3(-leftMove * 2, 0, 0);
         hostGameMenu.position += new Vector3(-leftMove * 2, 0, 0);
         joinGameMenu.position += new Vector3(-leftMove * 2, 0, 0);
+        createMainMenu.position += new Vector3(-leftMove * 2, 0, 0);
+        createMapMenu.position += new Vector3(-leftMove * 2, 0, 0);
+        createCampaignMenu.position += new Vector3(-leftMove * 2, 0, 0);
     }
     public void ExitGame()
     {
@@ -108,5 +122,59 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
         string gameName = joinGameMenu.GetChild(1).GetChild(1).GetComponent<Text>().text;
         string password = joinGameMenu.GetChild(2).GetChild(1).GetComponent<Text>().text;
     }
+    #endregion
+
+    #region create menu navigation
+
+    public void MainMenuToCreateMainMenu()
+    {
+        Sequence mysequence = DOTween.Sequence();
+
+        mysequence.Append(MainMenu.DOMoveX(-leftMove, transferTime, false));
+        mysequence.Append(createMainMenu.DOMoveX(leftMove, transferTime, false));
+    }
+
+    public void CreateMainMenuToMainMenu()
+    {
+        Sequence mysequence = DOTween.Sequence();
+
+        mysequence.Append(createMainMenu.DOMoveX(-leftMove, transferTime, false));
+        mysequence.Append(MainMenu.DOMoveX(leftMove, transferTime, false));
+    }
+
+    public void CreateMainMenuToCreateMapMenu()
+    {
+        Sequence mysequence = DOTween.Sequence();
+
+        mysequence.Append(createMainMenu.DOMoveX(-leftMove, transferTime, false));
+        mysequence.Append(createMapMenu.DOMoveX(leftMove, transferTime, false));
+
+    }
+
+    public void CreateMapMenuToCreateMainMenu()
+    {
+        Sequence mysequence = DOTween.Sequence();
+
+        mysequence.Append(createMapMenu.DOMoveX(-leftMove, transferTime, false));
+        mysequence.Append(createMainMenu.DOMoveX(leftMove, transferTime, false));
+    }
+
+    public void CreateMainMenuToCreateCampaignMenu()
+    {
+        Sequence mysequence = DOTween.Sequence();
+
+        mysequence.Append(createMainMenu.DOMoveX(-leftMove, transferTime, false));
+        mysequence.Append(createCampaignMenu.DOMoveX(leftMove, transferTime, false));
+    }
+
+    public void CreateCampaignMenuToCreateMainMenu()
+    {
+        Sequence mysequence = DOTween.Sequence();
+
+        mysequence.Append(createCampaignMenu.DOMoveX(-leftMove, transferTime, false));
+        mysequence.Append(createMainMenu.DOMoveX(leftMove, transferTime, false));
+    }
+
+
     #endregion
 }
