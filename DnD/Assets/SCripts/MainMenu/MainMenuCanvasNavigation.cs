@@ -8,6 +8,8 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
 
     float leftMove = 0.0f;
     float transferTime = 0.5f;
+
+    Vector3 CentreStartPosition = Vector3.zero;
     Vector3 p = Vector3.zero;
     [SerializeField]
     Transform BackgroundMapThing = null;
@@ -27,8 +29,13 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
     [SerializeField]
     Transform createCampaignMenu = null;
 
+
+    IndevidualCanvasITems canvasCreationScript;
+
     // Use this for initialization
     void Start() {
+
+        canvasCreationScript =  GetComponent<IndevidualCanvasITems>();
 
         MainMenu.gameObject.SetActive(true);
         playOnlineMenu.gameObject.SetActive(true);
@@ -41,6 +48,7 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
         mmStartValue = MainMenu.GetComponent<RectTransform>().position;
         p = Camera.main.ScreenToWorldPoint(new Vector3(0, Screen.height / 2, Camera.main.nearClipPlane));
         leftMove = mmStartValue.x - p.x;
+        CentreStartPosition = BackgroundMapThing.position;
 
         playOnlineMenu.position += new Vector3(-leftMove * 2, 0, 0);
         hostGameMenu.position += new Vector3(-leftMove * 2, 0, 0);
@@ -149,6 +157,49 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
         mysequence.Append(createMainMenu.DOMoveX(-leftMove, transferTime, false));
         mysequence.Append(createMapMenu.DOMoveX(leftMove, transferTime, false));
 
+
+        Vector3 screenpos = new Vector3(Screen.width, Screen.height / 2, 0.0f);
+        Vector3 cameraRightPain = Camera.main.ScreenToWorldPoint(screenpos);
+        float xDistance = Vector3.Distance(BackgroundMapThing.position, cameraRightPain);
+        Vector3 movePosition = new Vector3(BackgroundMapThing.position.x + (xDistance * 1.25f), BackgroundMapThing.position.y, BackgroundMapThing.position.z);
+
+        BackgroundMapThing.DOMove(movePosition, 1, false);
+    }
+
+    public void GenerateMap()
+    {
+
+        bool createMap = true;
+        if (createMapMenu.GetChild(5).GetChild(0).GetComponent<Text>().text == "CHOOSE MAP TYPE")
+        {
+            createMap = false;
+            //display error message
+        }
+       
+        if (createMapMenu.GetChild(3).GetChild(0).GetComponent<Text>().text == "MAP HEIGHT")
+        {
+            //return error
+            createMap = false;
+        }
+
+       
+        if (createMapMenu.GetChild(4).GetChild(0).GetComponent<Text>().text == "MAP HEIGHT")
+        {
+            createMap = false;
+            
+            //return error
+        }
+
+        int numX = 0;
+        int numY = 0;
+
+        if (createMap)
+        {
+            int.TryParse(createMapMenu.GetChild(3).GetChild(0).GetComponent<Text>().text, out numX);
+            int.TryParse(createMapMenu.GetChild(4).GetChild(0).GetComponent<Text>().text, out numY);
+            canvasCreationScript.GenerateGridWithDimentions(createMapMenu.GetChild(5).GetChild(0).GetComponent<Text>().text, numX, numY);
+        }
+       
     }
 
     public void CreateMapMenuToCreateMainMenu()
@@ -157,6 +208,8 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
 
         mysequence.Append(createMapMenu.DOMoveX(-leftMove, transferTime, false));
         mysequence.Append(createMainMenu.DOMoveX(leftMove, transferTime, false));
+
+        BackgroundMapThing.DOMove(CentreStartPosition, 1, false);
     }
 
     public void CreateMainMenuToCreateCampaignMenu()
@@ -165,6 +218,16 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
 
         mysequence.Append(createMainMenu.DOMoveX(-leftMove, transferTime, false));
         mysequence.Append(createCampaignMenu.DOMoveX(leftMove, transferTime, false));
+
+        Vector3 screenpos = new Vector3(Screen.width, Screen.height / 2, 0.0f);
+        Vector3 cameraRightPain = Camera.main.ScreenToWorldPoint(screenpos);
+        float xDistance = Vector3.Distance(BackgroundMapThing.position, cameraRightPain);
+        Vector3 movePosition = new Vector3(BackgroundMapThing.position.x + xDistance, BackgroundMapThing.position.y, BackgroundMapThing.position.z);
+
+        BackgroundMapThing.DOMove(movePosition, 1, false);
+
+        
+       
     }
 
     public void CreateCampaignMenuToCreateMainMenu()
@@ -173,6 +236,8 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
 
         mysequence.Append(createCampaignMenu.DOMoveX(-leftMove, transferTime, false));
         mysequence.Append(createMainMenu.DOMoveX(leftMove, transferTime, false));
+        
+
     }
 
 
