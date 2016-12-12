@@ -25,6 +25,8 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
     [SerializeField]
     Transform createMainMenu = null;
     [SerializeField]
+    Transform createCharacterMenu = null;
+    [SerializeField]
     Transform createMapMenu = null;
     [SerializeField]
     Transform createCampaignMenu = null;
@@ -42,6 +44,7 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
         hostGameMenu.gameObject.SetActive(true);
         joinGameMenu.gameObject.SetActive(true);
         createMainMenu.gameObject.SetActive(true);
+        createCharacterMenu.gameObject.SetActive(true);
         createMapMenu.gameObject.SetActive(true);
         createCampaignMenu.gameObject.SetActive(true);
 
@@ -54,6 +57,7 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
         hostGameMenu.position += new Vector3(-leftMove * 2, 0, 0);
         joinGameMenu.position += new Vector3(-leftMove * 2, 0, 0);
         createMainMenu.position += new Vector3(-leftMove * 2, 0, 0);
+        createCharacterMenu.position += new Vector3(-leftMove * 2, 0, 0);
         createMapMenu.position += new Vector3(-leftMove * 2, 0, 0);
         createCampaignMenu.position += new Vector3(-leftMove * 2, 0, 0);
     }
@@ -148,6 +152,33 @@ public class MainMenuCanvasNavigation : MonoBehaviour {
 
         mysequence.Append(createMainMenu.DOMoveX(-leftMove, transferTime, false));
         mysequence.Append(MainMenu.DOMoveX(leftMove, transferTime, false));
+    }
+
+    //----------_create_map_-------------\\
+
+    public void CreateMainMenuToCreateCharacterMenu()
+    {
+        Sequence mysequence = DOTween.Sequence();
+
+        mysequence.Append(createMainMenu.DOMoveX(-leftMove, transferTime, false));
+        mysequence.Append(createCharacterMenu.DOMoveX(leftMove, transferTime, false));
+
+        Vector3 screenpos = new Vector3(Screen.width, Screen.height / 2, 0.0f);
+        Vector3 cameraRightPain = Camera.main.ScreenToWorldPoint(screenpos);
+        float xDistance = Vector3.Distance(BackgroundMapThing.position, cameraRightPain);
+        Vector3 movePosition = new Vector3(BackgroundMapThing.position.x + (xDistance * 1.25f), BackgroundMapThing.position.y, BackgroundMapThing.position.z);
+
+        BackgroundMapThing.DOMove(movePosition, 1, false);
+    }
+
+    public void CreateCharacterToCreateMainMenu()
+    {
+        Sequence mysequence = DOTween.Sequence();
+
+        mysequence.Append(createCharacterMenu.DOMoveX(-leftMove, transferTime, false));
+        mysequence.Append(createMainMenu.DOMoveX(leftMove, transferTime, false));
+
+        BackgroundMapThing.DOMove(CentreStartPosition, 1, false);
     }
 
     public void CreateMainMenuToCreateMapMenu()
